@@ -1,0 +1,14 @@
+vsEmrTools
+vsEncryption
+vsFeatures
+vsHighDimensionalData
+vsJavaScript
+vsMassSpecData
+vsOutcomeTools
+vsPathways
+vsPosteriorDensities
+vsPrediction
+vsSparseFactorModel
+vsTableFormatting
+vsUtilityFunctions
+vsVisualizations
