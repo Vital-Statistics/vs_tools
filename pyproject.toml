@@ -20,7 +20,19 @@ classifiers = [
 
 [tool.setuptools]
 package-dir = {"" = "pythonTools"}
-py-modules = ["vs_tools_autoexport"]
-
-[tool.setuptools.packages.find]
-where = ["pythonTools"]
+py-modules = [
+  "vsEmrTools",
+  "vsEncryption",
+  "vsFeatures",
+  "vsHighDimensionalData",
+  "vsJavaScript",
+  "vsMassSpecData",
+  "vsOutcomeTools",
+  "vsPathways",
+  "vsPosteriorDensities",
+  "vsPrediction",
+  "vsSparseFactorModel",
+  "vsTableFormatting",
+  "vsUtilityFunctions",
+  "vsVisualizations",
+]

@@ -12,4 +12,3 @@ vsSparseFactorModel
 vsTableFormatting
 vsUtilityFunctions
 vsVisualizations
-vs_tools_autoexport
