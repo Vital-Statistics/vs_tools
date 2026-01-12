@@ -1,6 +1,7 @@
 LICENSE
 README.md
 pyproject.toml
+pythonTools/vs_tools_autoexport.py
 pythonTools/vsEmrTools/__init__.py
 pythonTools/vsEmrTools/emrTools.py
 pythonTools/vsEmrTools/encounterSummary.py
