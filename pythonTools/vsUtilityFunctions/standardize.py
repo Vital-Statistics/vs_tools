@@ -5,6 +5,8 @@ Created on Mon May  9 13:33:58 2022
 @author: joest
 """
 
+import pandas as pd
+
 def standardize(x,axis=0):
     import numpy as np
     col=list(x)

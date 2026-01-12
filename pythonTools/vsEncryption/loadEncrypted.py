@@ -6,6 +6,8 @@ Created on Fri Jun  7 16:03:23 2024
 @author: rudy
 """
 
+import pandas as pd
+
 
 # Function to decrypt data in memory
 def loadEncrypted(encrypted_file_path, key=None):
@@ -30,5 +32,4 @@ def loadEncrypted(encrypted_file_path, key=None):
     dDat.seek(0)
     res=pd.read_parquet(dDat)
     return res
-
 

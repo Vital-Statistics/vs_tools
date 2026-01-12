@@ -5,6 +5,8 @@ Created on Mon Aug  1 07:11:01 2016
 @author: lucas
 """
 
+import pandas as pd
+
 def obsPerWeek(A,stLbl='firstVisitDate',edLbl='lastVisitDate',t0Lbl='eStartTime'):
     A=A[~A[t0Lbl].isnull()]
     a=(A[stLbl]-A[t0Lbl]).apply(lambda x: round(float(x.days)/7)).rename('start')

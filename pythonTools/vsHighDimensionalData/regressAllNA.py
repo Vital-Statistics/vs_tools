@@ -6,6 +6,11 @@ Created on Mon Dec 22 09:33:41 2025
 @author: rudy
 """
 
+import pandas as pd
+
+from vsPathways.computeGAGE import computeGAGE
+from vsVisualizations.loopProgress import loopProgress
+
 
 def regressAllNA(vIndep,Y,studyVars=None,lbl=None,showIntercept=False):
     import numpy as np

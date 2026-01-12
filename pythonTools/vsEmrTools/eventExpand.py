@@ -1,4 +1,6 @@
 
+import pandas as pd
+
 def eventExpand(eList,lbl,collapseToEncounter=False):
 #    set(eList.SOURCE)
     cn=list(eList)
@@ -13,4 +15,3 @@ def eventExpand(eList,lbl,collapseToEncounter=False):
         a.loc[a.enc_time.isnull(),'EVENT_TIME']= a.loc[a.enc_time.isnull(),'EVENT_TIME']
     
     return(a)
-

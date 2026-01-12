@@ -5,6 +5,14 @@ Created on Mon Dec 13 10:05:56 2021
 @author: joest
 """
 
+import glob
+import os
+import numpy as np
+import pandas as pd
+
+from vsPathways.computeGAGE import computeGAGE
+from vsVisualizations.loopProgress import loopProgress
+
 def pwSMPDB(M,mLbl='HMDB', pthLbl='HMDB ID',sigCol='p-value',st='t-statistic',minMeasured=3,dataType='metabolomics'
             ,pathwayType=None,dropPathwayList=None,computation='GAGE'):
     import math

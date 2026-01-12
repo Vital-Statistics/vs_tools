@@ -6,6 +6,10 @@ Created on Sun Jan  4 11:51:49 2026
 @author: rudy
 """
 
+import pandas as pd
+
+from vsVisualizations.vs_palette import vs_palette
+
 def boxSwarm(group,value):
     import seaborn as sns
     df=pd.DataFrame({'value':value,'group':group})

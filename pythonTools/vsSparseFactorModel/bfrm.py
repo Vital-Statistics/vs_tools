@@ -5,6 +5,11 @@ Created on Sat Apr 23 23:28:10 2022
 @author: joest
 """
 
+import pandas as pd
+
+from vsUtilityFunctions.standardize import standardize
+from vsVisualizations.loopProgress import loopProgress
+
 def bfrm(Z,nFac=None,F=None,nSteps=500,phi0=.01,mu0=0,burnin=0,updateF=True):
     import random
     import numpy as np

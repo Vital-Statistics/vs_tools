@@ -6,6 +6,8 @@ Created on Mon Nov 27 09:02:53 2023
 @author: rudy
 """
 
+import pandas as pd
+
 def dictToExcel(d,outFile):
     with pd.ExcelWriter(outFile, engine='xlsxwriter') as writer:
         for sheet_name, df in d.items():

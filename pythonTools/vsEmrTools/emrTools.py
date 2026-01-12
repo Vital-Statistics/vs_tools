@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 import scipy
 import operator
+from numpy import ones
 
 def allValsList(t,pth,res=None):
     if(res==None):

@@ -6,6 +6,8 @@ Created on Sun Aug 31 14:51:35 2025
 @author: rudy
 """
 
+import pandas as pd
+
 
 
 def keggPathways(kegg_id: str) -> pd.DataFrame:
@@ -48,4 +50,3 @@ def keggPathways(kegg_id: str) -> pd.DataFrame:
 
     rows = [{"pathway_id": pid, "pathway_name": name} for pid in path_ids]
     return pd.DataFrame(rows)
-

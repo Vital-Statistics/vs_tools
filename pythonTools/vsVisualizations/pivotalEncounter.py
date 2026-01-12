@@ -5,6 +5,9 @@ Created on Mon Mar 12 10:04:12 2018
 @author: jel2
 """
 
+import datetime
+import pandas as pd
+
 def pivotalEncounter(evt,M,colName='LABEL',wdw=365.25/2,buffer=1,flt=None,countPatients=True):
     ############## Examples of diagnoses that occur more often after the initial diagnosis than before
     import math

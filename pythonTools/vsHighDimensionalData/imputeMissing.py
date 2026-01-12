@@ -6,6 +6,8 @@ Created on Sun Dec 21 09:51:29 2025
 @author: rudy
 """
 
+import pandas as pd
+
 # def imputeMissing(X):
 #     ### EM-PCA / low-rank matrix completion
 #     import numpy as np

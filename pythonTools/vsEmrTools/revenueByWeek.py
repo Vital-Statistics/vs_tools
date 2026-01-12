@@ -5,6 +5,10 @@ Created on Thu May 17 13:44:25 2018
 @author: jel2
 """
 
+import math
+
+from vsEmrTools.timeFilter import timeFilter
+
 def revenueByWeek(rev,sTime,low=-1,hi=1,w=None):
     R=timeFilter(rev,sTime,low,hi)
     R['week']=R.delta.apply(lambda x: math.floor(x*52))

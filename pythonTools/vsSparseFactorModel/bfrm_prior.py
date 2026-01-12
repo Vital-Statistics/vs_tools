@@ -5,7 +5,12 @@ Created on Sat Apr 23 23:28:10 2022
 @author: joest
 """
 
+import numpy as np
+import pandas as pd
+import statsmodels.api as sm
 import scipy.stats as st
+
+from vsVisualizations.loopProgress import loopProgress
 
 def pcImpute(M,nFac=2,mask=None,nSteps=1):
     if mask is None:
@@ -140,4 +145,3 @@ def bfrm_prior(Z,H,z_mask=None,nFac=0,nSteps=500,burnin=0,hpStrength=50):
                 pTrace[cNum,:,i-burnin]=p
 
     return((betaTrace, HTrace, thetaTrace, pTrace))
-

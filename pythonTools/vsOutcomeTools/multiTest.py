@@ -5,6 +5,9 @@ Created on Mon Mar 19 09:25:16 2018
 @author: jel2
 """
 
+import numpy as np
+import pandas as pd
+import scipy
 import scipy.stats as stat
 
 def multiTest(q,M,f=stat.fisher_exact,lbl='feature',cLbl=None,verbose=False):

@@ -6,6 +6,10 @@ Created on Sat Dec  6 10:57:14 2025
 @author: rudy + ChatGPT
 """
 
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
 def removeDups(omList, cos_tol=0.9):
     """
     Remove nearly-duplicate directions from omList based on absolute cosine similarity.
@@ -193,6 +197,5 @@ def filterModes(omTrace,showPlots=False):
         plt.scatter(tt.delta,tt.N)
     kpn=set(tt.N.unique())
     return([(beta,V) for beta,V in omTrace if len(V) in kpn])
-
 
 

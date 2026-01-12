@@ -6,6 +6,12 @@ Created on Thu Dec 11 20:56:27 2025
 @author: rudy
 """
 
+import os
+import re
+import pandas as pd
+
+from vsMassSpecData.apiLookups import apiLookups
+
 def t_tg(s):
     res=re.sub(r'^TG\.(\d+)\.(\d+)_([\d\.]+)\.(\d+)', r'TG \1:\2_\3:\4', s)
     return(res)

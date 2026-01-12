@@ -6,6 +6,10 @@ Created on Sun Mar 16 15:15:46 2025
 @author: rudy
 """
 
+import pandas as pd
+
+from vsVisualizations.loopProgress import loopProgress
+
 
 # List of metabolite names to standardize
 def queryMetWorkbench(mwl):

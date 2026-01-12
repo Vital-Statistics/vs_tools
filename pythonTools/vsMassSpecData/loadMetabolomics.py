@@ -5,6 +5,8 @@ Created on Thu Mar 22 14:48:04 2018
 @author: joseph lucas
 """
 
+import re
+
 def loadMetabolomics(filePath,lastSampCol='Injection Number',sid='Customer Sample Identification',maxMissing=1
                      ,header=1,lodCol=None,nHeader=None,log2Transform=None,normalize=False,platform=None,stdFilter=False
                      ,imputeMissing=True):

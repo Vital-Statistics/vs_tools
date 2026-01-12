@@ -5,6 +5,8 @@ Created on Thu Mar  1 09:49:53 2018
 @author: jel2
 """
 
+from vsFeatures.buildSparse import buildSparse
+
 def matrixWdw(eList,params):
     import pandas as pd
     

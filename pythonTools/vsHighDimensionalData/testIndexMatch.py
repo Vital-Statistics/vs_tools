@@ -6,6 +6,8 @@ Created on Wed Sep  6 05:56:24 2023
 @author: rudy
 """
 
+import pandas as pd
+
 def testIndexMatch(A,B,showAB=False,showBA=False):
     a=pd.Series(A.index.values)
     b=pd.Series(B.index.values)

@@ -5,6 +5,9 @@ Created on Wed Jun  7 10:29:12 2017
 @author: jel2
 """
 
+import numpy as np
+import scipy
+
 def buildSparse(df,a,b,colFilter=None,rowFilter=None):
     ct=df[[a,b]].groupby([a,b]).size()
     i=np.array(ct.index.labels[0])

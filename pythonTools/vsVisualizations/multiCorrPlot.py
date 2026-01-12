@@ -5,6 +5,13 @@ Created on Fri Jun  3 10:08:42 2022
 @author: joest
 """
 
+import math
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from vsVisualizations.vs_clr import vs_clr
+
 def compSig(dat):
     dat=dat.loc[dat.isna().sum(axis=1)==0]
     dat=np.array(dat)

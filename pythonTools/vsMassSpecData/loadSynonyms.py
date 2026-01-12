@@ -6,6 +6,9 @@ Created on Sun Nov 16 08:49:06 2025
 @author: rudy
 """
 
+import os
+import pandas as pd
+
 def loadSynonyms(meta):
     lbl=pd.concat([pd.read_excel(os.environ['DATA_PATH']+'metabolomics/q500 metaboliteNames/Rosetta Stone Quant 500_BioIDs_20190121.xlsx',sheet_name='LC Part',header=1),
                    pd.read_excel(os.environ['DATA_PATH']+'metabolomics/q500 metaboliteNames/Rosetta Stone Quant 500_BioIDs_20190121.xlsx',sheet_name='FIA Part',header=1)])

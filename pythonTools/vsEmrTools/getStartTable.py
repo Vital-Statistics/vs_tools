@@ -5,6 +5,12 @@ Created on Thu May 17 13:44:25 2018
 @author: jel2
 """
 
+import datetime
+import math
+import pandas as pd
+
+from vsEmrTools.encounterSummary import encounterSummary
+
 
 def getStartTable(fev,pts,eList):
 

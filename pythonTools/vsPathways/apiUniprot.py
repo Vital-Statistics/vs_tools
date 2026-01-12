@@ -6,6 +6,8 @@ Created on Sun Aug 31 07:31:24 2025
 @author: rudy
 """
 
+import pandas as pd
+
 def parseUniProt(v):
     op={'Assession':v['primaryAccession']}
     op['UniProt ID']=v.get('uniProtkbId',{})
@@ -46,4 +48,3 @@ def apiUniprot(analyte,organism_id='9606'):
     tbl=pd.DataFrame([parseUniProt(v) for v in upOut],index=range(len(upOut)))
 
     return((tbl,upOut))
-

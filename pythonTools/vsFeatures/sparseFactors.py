@@ -5,6 +5,8 @@ Created on Sat Apr 23 23:28:10 2022
 @author: joest
 """
 
+from vsVisualizations.loopProgress import loopProgress
+
 def sparseFactors(Z,nFac=10,nSteps=500):
     import random
     import numpy as np

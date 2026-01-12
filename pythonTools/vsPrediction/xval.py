@@ -5,6 +5,10 @@ Created on Thu Mar  1 13:29:53 2018
 @author: jel2
 """
 
+import pandas as pd
+
+from vsPrediction.lsReg import lsReg
+
 def xval(x,y,g,mdl,params):
     M=pd.DataFrame(g).join(y,how='outer').join(x,how='outer')
 #    Y=np.array(M[list(y)])

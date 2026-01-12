@@ -6,6 +6,9 @@ Created on Sat Sep  9 12:46:51 2023
 @author: rudy
 """
 
+import numpy as np
+import pandas as pd
+
 def predict_proba(mod,Z):
     ll=(Z.isna().sum(axis=1)==0)
     yhat=pd.Series(np.nan,index=Z.index)

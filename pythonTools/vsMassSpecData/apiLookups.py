@@ -8,6 +8,8 @@ Created on Fri Dec 12 15:35:53 2025
 
 import requests
 import time
+import os
+import pandas as pd
 
 
 def lookupKeggPathways(keggID,reload=False):

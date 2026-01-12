@@ -5,6 +5,9 @@ Created on Mon Dec 13 09:11:43 2021
 @author: joest
 """
 
+import math
+import pandas as pd
+
 def computeGAGE(pv):
     ### pv should be a list of p-values for analytes in the pathway
     import scipy.stats as stats

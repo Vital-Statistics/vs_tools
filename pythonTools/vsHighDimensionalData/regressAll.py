@@ -6,6 +6,10 @@ Created on Sun Sep  3 08:48:39 2023
 @author: rudy
 """
 
+import pandas as pd
+
+from vsVisualizations.loopProgress import loopProgress
+
 def regressAll(vIndep,Y,studyVars=None,lbl=None,showIntercept=False):
     import numpy as np
     import statsmodels.api as sm
