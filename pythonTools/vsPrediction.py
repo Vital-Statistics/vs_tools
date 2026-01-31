@@ -1,11 +1,11 @@
+"""
+@author: Vital Statistics, LLC
+Copyright (c) 2026 Vital Statistics, LLC
+"""
 # Auto-generated from vsPrediction/ package modules.
 
 # ---- source: vsPrediction/lsReg.py ----
-"""
-Created on Thu Mar  1 14:14:51 2018
 
-@author: jel2
-"""
 
 def lsReg(M,params):
     import lifelines as lf
@@ -16,11 +16,7 @@ def lsReg(M,params):
 
 # ---- source: vsPrediction/predict_proba.py ----
 #!/usr/bin/env python3
-"""
-Created on Sat Sep  9 12:46:51 2023
 
-@author: rudy
-"""
 
 import numpy as np
 import pandas as pd
@@ -33,18 +29,13 @@ def predict_proba(mod,Z):
 
 # ---- source: vsPrediction/selectAndTrain.py ----
 #!/usr/bin/env python3
-"""
-Created on Sat Sep  9 09:07:54 2023
 
-@author: rudy
-"""
 
 import numpy as np
-import pandas as pd
 
-from vsVisualizations import loopProgress
 
 def selectAndTrain(X,y,lbl='Setting regression penalty',returnYhat=False,verbose=False,leaveOneOut=False):
+    from vsVisualizations import loopProgress
     from sklearn.metrics import roc_auc_score
     from scipy import stats as stat
     from scipy.special import logit
@@ -101,13 +92,8 @@ def selectAndTrain(X,y,lbl='Setting regression penalty',returnYhat=False,verbose
 # full data set.
 
 # ---- source: vsPrediction/xval.py ----
-"""
-Created on Thu Mar  1 13:29:53 2018
 
-@author: jel2
-"""
 
-import pandas as pd
 
 
 def xval(x,y,g,mdl,params):
@@ -133,13 +119,8 @@ def xval(x,y,g,mdl,params):
     return(M)
 
 # ---- source: vsPrediction/xval_train.py ----
-"""
-Created on Tue May 26 13:52:01 2020
 
-@author: jolucas
-"""
 
-import pandas as pd
 
 def xval_train(mod,X,Y,grp=None,folds=20,leaveOneOut=False,verbose=False):
     import random
@@ -226,13 +207,8 @@ def xval_train_deep(mod,X,y,ep=150,bs=50):
     return(S['xval'])
 
 # ---- source: vsPrediction/xval_train_Other.py ----
-"""
-Created on Tue May 26 13:52:01 2020
 
-@author: jolucas
-"""
 
-import pandas as pd
 
 def xval_trainV2(mod,X,y):
     S=pd.merge(y.rename('y'),X,left_index=True,right_index=True)

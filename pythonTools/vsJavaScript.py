@@ -1,11 +1,11 @@
+"""
+@author: Vital Statistics, LLC
+Copyright (c) 2026 Vital Statistics, LLC
+"""
 # Auto-generated from vsJavaScript/ package modules.
 
 # ---- source: vsJavaScript/data2js.py ----
-"""
-Created on Thu Jan  7 15:28:34 2021
 
-@author: joseph e lucas
-"""
 
 def data2js(data,dataName,outFile):
 	### Load a csv into 'data'.  dataName is the name of the javascript package, and outFile is the location to write the javascript

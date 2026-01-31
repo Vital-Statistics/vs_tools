@@ -1,17 +1,16 @@
+"""
+@author: Vital Statistics, LLC
+Copyright (c) 2026 Vital Statistics, LLC
+"""
 # Auto-generated from vsEmrTools/ package modules.
 
 # ---- source: vsEmrTools/emrTools.py ----
-"""
-Created on Wed May  3 15:18:36 2017
 
-@author: jel2
-"""
 
 import datetime
 from collections import Counter
 import numpy as np
 import pandas as pd
-import scipy
 import operator
 from numpy import ones
 
@@ -68,6 +67,7 @@ def detailsToDF(pts):
 #        i+=1
 
 def computeSparse(pts,pth,src=None,dmn=datetime.datetime(1,1,1),dmx=datetime.datetime(9999,1,1)):
+    import scipy
     if type(src)=='str':
         src=set([src])
     ########## sparse matrices computed only from the events dictionary
@@ -111,11 +111,7 @@ def computeSparse(pts,pth,src=None,dmn=datetime.datetime(1,1,1),dmx=datetime.dat
 
 
 # ---- source: vsEmrTools/encounterSummary.py ----
-"""
-Created on Mon Mar 12 11:19:12 2018
 
-@author: jel2
-"""
 
 def encounterSummary(M,grp=dict()):
     ### add functionality: column identifying presence of group variables
@@ -126,7 +122,6 @@ def encounterSummary(M,grp=dict()):
 
 # ---- source: vsEmrTools/eventExpand.py ----
 
-import pandas as pd
 
 def eventExpand(eList,lbl,collapseToEncounter=False):
 #    set(eList.SOURCE)
@@ -144,11 +139,7 @@ def eventExpand(eList,lbl,collapseToEncounter=False):
     return(a)
 
 # ---- source: vsEmrTools/firstEvent.py ----
-"""
-Created on Mon Mar 12 10:44:56 2018
 
-@author: jel2
-"""
 
 def firstEvent(M,col,pat):
     
@@ -158,15 +149,10 @@ def firstEvent(M,col,pat):
     return(sTime)
 
 # ---- source: vsEmrTools/getStartTable.py ----
-"""
-Created on Thu May 17 13:44:25 2018
 
-@author: jel2
-"""
 
 import datetime
 import math
-import pandas as pd
 
 
 
@@ -209,13 +195,8 @@ def getStartTable(fev,pts,eList):
     return(sTime)
 
 # ---- source: vsEmrTools/getSubtable.py ----
-"""
-Created on Wed Jun 14 10:05:36 2017
 
-@author: jel2
-"""
 
-import pandas as pd
 
 #### this version resets the index of X in the returned table
 def getSubtable(X,dictColumn='DETAILS'):
@@ -235,11 +216,7 @@ def obsWindow(eList):
     
 
 # ---- source: vsEmrTools/revenueByWeek.py ----
-"""
-Created on Thu May 17 13:44:25 2018
 
-@author: jel2
-"""
 
 import math
 
@@ -272,11 +249,7 @@ def revenueByWeek(rev,sTime,low=-1,hi=1,w=None):
     return(t)
 
 # ---- source: vsEmrTools/timeFilter.py ----
-"""
-Created on Tue Apr  3 08:36:56 2018
 
-@author: jel2
-"""
 
 import datetime
 

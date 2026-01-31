@@ -1,16 +1,15 @@
+"""
+@author: Vital Statistics, LLC
+Copyright (c) 2026 Vital Statistics, LLC
+"""
 # Auto-generated from vsOutcomeTools/ package modules.
 
 # ---- source: vsOutcomeTools/addPlot_event.py ----
-"""
-Created on Thu Jul  6 16:17:05 2017
 
-@author: jel2
-"""
 import pandas as pd
-import scipy.stats as stats
-import matplotlib.pyplot as plt
 
 def cBands_poisGamma(u,alpha=.5,beta=.5,ivl=.95):
+    import scipy.stats as stats
     a=u['Events']+alpha
     b=u['N']+beta
     delta=(1-ivl)/2
@@ -19,6 +18,7 @@ def cBands_poisGamma(u,alpha=.5,beta=.5,ivl=.95):
     return(u)
 
 def addPlot_event(fig,w,n,e,clr='k',lbl=None):
+    import matplotlib.pyplot as plt
     u=pd.DataFrame({'week':w, 'N':n, 'Events':e})
     u=u.sort_values('week')
     u['N']=u['N'].cumsum()
@@ -31,12 +31,11 @@ def addPlot_event(fig,w,n,e,clr='k',lbl=None):
 
 # ---- source: vsOutcomeTools/beforeAfterComparison.py ----
 
-import pandas as pd
-from scipy.special.cython_special import betaln
 #from scipy.stats import fisher_exact
 from math import log
 
 def llBBN(d,a,mu=.05,enObs=1):
+    from scipy.special.cython_special import betaln
     return(betaln(d+mu*enObs,a+(1-mu)*enObs)-betaln(mu*enObs,(1-mu)*enObs))
 
 def beforeAfterComparison(tm,grp,cst=None,tThresh=30,wdw=1,maxPlot=10,patientID=None):
@@ -85,14 +84,9 @@ def beforeAfterComparison(tm,grp,cst=None,tThresh=30,wdw=1,maxPlot=10,patientID=
     return(tbl)
 
 # ---- source: vsOutcomeTools/departmentUtilization.py ----
-"""
-Created on Mon Aug  1 07:11:01 2016
 
-@author: lucas
-"""
 
 import re
-import pandas as pd
 
 def departmentUtilization(eList,pts,dSet):
     
@@ -109,13 +103,8 @@ def departmentUtilization(eList,pts,dSet):
 
 # ---- source: vsOutcomeTools/dictToExcel.py ----
 #!/usr/bin/env python3
-"""
-Created on Mon Nov 27 09:02:53 2023
 
-@author: rudy
-"""
 
-import pandas as pd
 
 def dictToExcel(d,outFile):
     with pd.ExcelWriter(outFile, engine='xlsxwriter') as writer:
@@ -124,18 +113,13 @@ def dictToExcel(d,outFile):
         # writer.save()
 
 # ---- source: vsOutcomeTools/multiTest.py ----
-"""
-Created on Mon Mar 19 09:25:16 2018
 
-@author: jel2
-"""
 
 import numpy as np
-import pandas as pd
-import scipy
-import scipy.stats as stat
 
 def multiTest(q,M,f=stat.fisher_exact,lbl='feature',cLbl=None,verbose=False):
+    import scipy
+    import scipy.stats as stat
     if not cLbl:
         cLbl=['Feature '+str(x) for x in list(range(0,M.shape[1]))]
     if f not in {stat.fisher_exact,stat.chi2_contingency}:
@@ -173,13 +157,8 @@ def multiTest(q,M,f=stat.fisher_exact,lbl='feature',cLbl=None,verbose=False):
     
 
 # ---- source: vsOutcomeTools/obsPerWeek.py ----
-"""
-Created on Mon Aug  1 07:11:01 2016
 
-@author: lucas
-"""
 
-import pandas as pd
 
 def obsPerWeek(A,stLbl='firstVisitDate',edLbl='lastVisitDate',t0Lbl='eStartTime'):
     A=A[~A[t0Lbl].isnull()]
@@ -198,12 +177,11 @@ def obsPerWeek(A,stLbl='firstVisitDate',edLbl='lastVisitDate',t0Lbl='eStartTime'
 
 # ---- source: vsOutcomeTools/paidBarChart.py ----
 
-import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
 
 def paidBarChart(tbl,maxPlot=10):
     
+    import matplotlib.pyplot as plt
+    import seaborn as sns
     if(len(tbl)>maxPlot):
         kp=tbl.iloc[:maxPlot,:]
     kp=set(tbl.index)
@@ -215,11 +193,7 @@ def paidBarChart(tbl,maxPlot=10):
     return(fig)
 
 # ---- source: vsOutcomeTools/tableOne.py ----
-"""
-Created on Mon Feb 26 12:10:57 2018
 
-@author: gsl8
-"""
 
 ###############################################################################
 def columns(df,d,i,out):
@@ -270,7 +244,6 @@ def demTable(df, splitColumn=None, output=None, filePath=None):
     '''
 
     import numpy as np
-    import pandas as pd
     import datetime
 
     if not splitColumn:

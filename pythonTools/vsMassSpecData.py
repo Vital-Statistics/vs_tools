@@ -1,12 +1,12 @@
+"""
+@author: Vital Statistics, LLC
+Copyright (c) 2026 Vital Statistics, LLC
+"""
 # Auto-generated from vsMassSpecData/ package modules.
 
 # ---- source: vsMassSpecData/addHMDB.py ----
 #!/usr/bin/env python3
-"""
-Created on Sat Jul  8 15:48:11 2023
 
-@author: rudy
-"""
 
 import os
 import pandas as pd
@@ -19,19 +19,14 @@ def addHMDB(meta):
 
 # ---- source: vsMassSpecData/apiLookups.py ----
 #!/usr/bin/env python3
-"""
-Created on Fri Dec 12 15:35:53 2025
 
-@author: rudy
-"""
 
-import requests
 import time
 import os
-import pandas as pd
 
 
 def lookupKeggPathways(keggID,reload=False):
+    import requests
     pwFilePath=os.environ['DATA_PATH']+'KEGG/keggPathways.parquet'
     pw=pd.read_parquet(pwFilePath)
     if keggID in set(pw.kegg) and not reload:
@@ -48,6 +43,7 @@ def lookupKeggPathways(keggID,reload=False):
         return(res)
 
 def uniprot_to_kegg(uniprot_id):
+    import requests
     ak=pd.read_parquet(os.environ['DATA_PATH']+'KEGG/allKegg.parquet')
     if uniprot_id in list(ak.uniprot):
         return(ak.set_index('uniprot').loc[[uniprot_id],'kegg'].tolist())
@@ -63,11 +59,13 @@ def uniprot_to_kegg(uniprot_id):
         return(kegg)
 
 def lookup_hmdb(hmdb_id):
+    import requests
     url = f"https://www.metabolomicsworkbench.org/rest/compound/hmdb_id/{hmdb_id}/"
     r = requests.get(url)
     return r.json()
 
 def map_names_via_metaboanalyst(names):
+    import requests
     url = "https://rest.xialab.ca/api/mapcompounds"
     payload = {
         "queryList": ";".join(names),
@@ -75,9 +73,9 @@ def map_names_via_metaboanalyst(names):
     }
     return requests.post(url, json=payload).json()
 
-import pubchempy as pcp
 
 def lookup_pubchem_by_name(name, max_hits=3):
+    import pubchempy as pcp
     comps = pcp.get_compounds(name, 'name')
     results = []
     for c in comps[:max_hits]:
@@ -91,6 +89,7 @@ def lookup_pubchem_by_name(name, max_hits=3):
     return results
 
 def mw_lookup_pubchem(cid):
+    import requests
     url = f"https://www.metabolomicsworkbench.org/rest/compound/pubchem_cid/{cid}/all/json"
     r = requests.get(url)
     r.raise_for_status()
@@ -99,7 +98,6 @@ def mw_lookup_pubchem(cid):
 def apiLookups(s,rerunSearch=180):
     from datetime import date,timedelta
     import os, time
-    import pandas as pd
     
     psPath=os.environ['DATA_PATH']+'metabolomics/apiLookups.parquet'
     priorSearch=pd.read_parquet(psPath)
@@ -156,18 +154,13 @@ def apiLookups(s,rerunSearch=180):
 # print(lookup_hmdb("HMDB0000161"))
 
 # ---- source: vsMassSpecData/loadMetabolomics.py ----
-"""
-Created on Thu Mar 22 14:48:04 2018
 
-@author: joseph lucas
-"""
 
 import re
 
 def loadMetabolomics(filePath,lastSampCol='Injection Number',sid='Customer Sample Identification',maxMissing=1
                      ,header=1,lodCol=None,nHeader=None,log2Transform=None,normalize=False,platform=None,stdFilter=False
                      ,imputeMissing=True):
-    import pandas as pd
     import numpy as np
     import math
     
@@ -299,14 +292,9 @@ def loadMetabolomics(filePath,lastSampCol='Injection Number',sid='Customer Sampl
 
 # ---- source: vsMassSpecData/loadSynonyms.py ----
 #!/usr/bin/env python3
-"""
-Created on Sun Nov 16 08:49:06 2025
 
-@author: rudy
-"""
 
 import os
-import pandas as pd
 
 def loadSynonyms(meta):
     lbl=pd.concat([pd.read_excel(os.environ['DATA_PATH']+'metabolomics/q500 metaboliteNames/Rosetta Stone Quant 500_BioIDs_20190121.xlsx',sheet_name='LC Part',header=1),
@@ -319,15 +307,10 @@ def loadSynonyms(meta):
 
 # ---- source: vsMassSpecData/m_canonicalNames.py ----
 #!/usr/bin/env python3
-"""
-Created on Thu Dec 11 20:56:27 2025
 
-@author: rudy
-"""
 
 import os
 import re
-import pandas as pd
 
 
 def t_tg(s):
@@ -461,19 +444,14 @@ def m_canonicalNames(res,colName='oName',metaAppend=[]):
 
 # ---- source: vsMassSpecData/queryMetWorkbench.py ----
 #!/usr/bin/env python3
-"""
-Created on Sun Mar 16 15:15:46 2025
 
-@author: rudy
-"""
 
-import pandas as pd
 
-from vsVisualizations import loopProgress
 
 
 # List of metabolite names to standardize
 def queryMetWorkbench(mwl):
+    from vsVisualizations import loopProgress
     import requests
     res=list()
     for i,name in enumerate(mwl):

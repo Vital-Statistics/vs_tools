@@ -1,16 +1,35 @@
-# Auto-generated from vsPathways/ package modules.
-
-# ---- source: vsPathways/apiUniprot.py ----
-#!/usr/bin/env python3
 """
-Created on Sun Aug 31 07:31:24 2025
-
-@author: rudy
+@author: Vital Statistics, LLC
+Copyright (c) 2026 Vital Statistics, LLC
 """
+import glob
+import math
+import os
 
+import numpy as np
 import pandas as pd
+try:
+    from tqdm import tqdm
+except Exception:
+    def tqdm(iterable=None, total=None, desc=None):
+        return iterable
+
 
 def parseUniProt(v):
+    """
+    Parse a UniProt record into a flat dict of key fields.
+
+    Parameters
+    ----------
+    v : dict
+        UniProt JSON record (one entry from the UniProt REST API results list).
+
+    Returns
+    -------
+    dict
+        Parsed fields including accession, UniProt ID, gene, protein name,
+        organism, and KEGG IDs (as a frozenset).
+    """
     op={'Assession':v['primaryAccession']}
     op['UniProt ID']=v.get('uniProtkbId',{})
     op['Gene']=v.get("genes", [{}])[0].get("geneName", {}).get("value")
@@ -31,6 +50,22 @@ def parseUniProt(v):
     return(op)
 
 def apiUniprot(analyte,organism_id='9606'):
+    """
+    Query UniProt for a gene/protein symbol and return parsed results.
+
+    Parameters
+    ----------
+    analyte : str
+        Gene/protein symbol or search term (e.g., "IL10").
+    organism_id : str, default '9606'
+        NCBI taxonomy ID (9606 = Homo sapiens).
+
+    Returns
+    -------
+    tuple
+        (tbl, upOut) where tbl is a pandas.DataFrame of parsed fields and
+        upOut is the raw UniProt JSON results list.
+    """
     import requests
     
     # Example: query UniProt for "IL10" (human)
@@ -51,56 +86,41 @@ def apiUniprot(analyte,organism_id='9606'):
 
     return((tbl,upOut))
 
-# ---- source: vsPathways/computeGAGE.py ----
-"""
-Created on Mon Dec 13 09:11:43 2021
-
-@author: joest
-"""
-
-import math
-import pandas as pd
-
 def computeGAGE(pv):
+    """
+    Compute a GAGE-style pathway p-value from analyte p-values.
+
+    Parameters
+    ----------
+    pv : list[float]
+        Iterable of p-values for analytes in the pathway.
+
+    Returns
+    -------
+    float
+        Combined pathway p-value (lower bounded at 1e-30).
+    """
     ### pv should be a list of p-values for analytes in the pathway
     import scipy.stats as stats
     pv=[max(1e-30,v) for v in pv if not pd.isna(v)]
     gam=stats.gamma(len(pv))
     return(max(1e-30,1-gam.cdf(sum([-math.log(v) for v in pv]))))
 
-
-# ############## Testing for accuracy
-# nSamp=10000
-# sampSize=10
-# gam=stats.gamma(sampSize)
-# res=pd.Series(0,index=list(range(nSamp)))
-# for i in res.index.values:
-#     rr=np.random.uniform(size=sampSize)
-#     # rr=-np.log(np.random.uniform(size=sampSize))
-#     # rr=sum(rr)
-#     # rr=np.mean(gam.rvs(100))
-#     # res.loc[i]= 1-gam.cdf(rr)
-#     res.loc[i]=computeGAGE(rr)
-# res.hist(bins=np.arange(0,1.01,.01))
-
-
-# np.mean(gam.rvs(10000))
-
-# ---- source: vsPathways/keggPathways.py ----
-#!/usr/bin/env python3
-"""
-Created on Sun Aug 31 14:51:35 2025
-
-@author: rudy
-"""
-
-import pandas as pd
-
-
-
 def keggPathways(kegg_id: str) -> pd.DataFrame:
+    """
+    Fetch KEGG pathways linked to a KEGG entry.
+
+    Parameters
+    ----------
+    kegg_id : str
+        KEGG entry ID (e.g., "hsa:1234" or "cpd:C00031").
+
+    Returns
+    -------
+    pandas.DataFrame
+        DataFrame with columns ["pathway_id", "pathway_name"].
+    """
     import requests
-    import pandas as pd
     BASE = "http://rest.kegg.jp"
     # 1) get pathway IDs for this entry
     r = requests.get(f"{BASE}/link/pathway/{kegg_id}", timeout=20)
@@ -111,45 +131,24 @@ def keggPathways(kegg_id: str) -> pd.DataFrame:
     if not path_ids:
         return pd.DataFrame(columns=["pathway_id", "pathway_name"])
 
-    # # 2) build a name map (organism-specific if gene; generic for compounds)
-    # org = None
-    # if ":" in kegg_id:
-    #     prefix = kegg_id.split(":")[0]
-    #     if prefix not in {"cpd", "drug", "glycan"}:
-    #         org = prefix  # e.g., 'hsa', 'mmu'
-
-    # name_map = {}
-
-    # # organism-specific names (e.g., path:hsa04060)
-    # if org:
-    #     rr = requests.get(f"{BASE}/list/pathway/{org}", timeout=20)
-    #     rr.raise_for_status()
-    #     for ln in rr.text.strip().splitlines():
-    #         pid, name = ln.split("\t", 1)
-    #         name_map[pid] = name
-
-    # # generic map names (e.g., path:map00010)
-    # else:
-    #     rr = requests.get(f"{BASE}/list/pathway", timeout=20)
-    #     rr.raise_for_status()
-    #     for ln in rr.text.strip().splitlines():
-    #         pid, name = ln.split("\t", 1)
-    #         name_map[pid] = name
-
     rows = [{"pathway_id": pid, "pathway_name": name} for pid in path_ids]
     return pd.DataFrame(rows)
 
-# ---- source: vsPathways/listKeggPathways.py ----
-#!/usr/bin/env python3
-"""
-Created on Sun Aug 31 18:25:56 2025
-
-@author: rudy
-"""
-
 def listKeggPathways(org='hsa'):
+    """
+    List KEGG pathways for an organism.
+
+    Parameters
+    ----------
+    org : str, default 'hsa'
+        KEGG organism code (e.g., 'hsa' for human, 'mmu' for mouse).
+
+    Returns
+    -------
+    pandas.DataFrame
+        DataFrame indexed by 'Pathway ID' with a 'Pathway Name' column.
+    """
     import requests
-    import pandas as pd
     BASE = "http://rest.kegg.jp"
     rr = requests.get(f"{BASE}/list/pathway/{org}", timeout=20)
     rr.raise_for_status()
@@ -162,22 +161,40 @@ def listKeggPathways(org='hsa'):
     res['Pathway ID']='path:'+res['Pathway ID']
     return(res.set_index('Pathway ID'))
 
-# ---- source: vsPathways/pwSMPDB.py ----
-"""
-Created on Mon Dec 13 10:05:56 2021
-
-@author: joest
-"""
-
-import glob
-import os
-import numpy as np
-import pandas as pd
-
-from vsVisualizations import loopProgress
-
 def pwSMPDB(M,mLbl='HMDB', pthLbl='HMDB ID',sigCol='p-value',st='t-statistic',minMeasured=3,dataType='metabolomics'
             ,pathwayType=None,dropPathwayList=None,computation='GAGE'):
+    """
+    Run SMPDB pathway analysis on a ranked metabolomics/proteomics table.
+
+    Parameters
+    ----------
+    M : pandas.DataFrame
+        Table with analyte identifiers and statistics. Must include columns
+        referenced by mLbl, sigCol, and st.
+    mLbl : str, default 'HMDB'
+        Column in M with analyte IDs matching the pathway list IDs.
+    pthLbl : str, default 'HMDB ID'
+        Column name in pathway list files to match to mLbl.
+    sigCol : str, default 'p-value'
+        Column in M with p-values.
+    st : str, default 't-statistic'
+        Column in M with signed statistics.
+    minMeasured : int, default 3
+        Minimum number of measured analytes required per pathway.
+    dataType : str, default 'metabolomics'
+        Data subfolder under DATA_PATH for pathway files.
+    pathwayType : list[str] | None
+        Optional list of pathway subjects to include.
+    dropPathwayList : list[str] | None
+        Optional list of pathway subjects to exclude.
+    computation : str, default 'GAGE'
+        Pathway p-value method: 'GAGE' or 'GSEA'.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Pathway summary table with p-values and FDR.
+    """
     import math
     from collections import defaultdict
     import gseapy as gp
@@ -215,10 +232,7 @@ def pwSMPDB(M,mLbl='HMDB', pthLbl='HMDB ID',sigCol='p-value',st='t-statistic',mi
     V=V.loc[~V.filePath.isna()]
 
     pthKeys=defaultdict(lambda:None)
-    sSize=math.ceil(len(V)/30)
-    for i,(pathway,fl) in enumerate(V.filePath.items()):
-        if i%sSize==0:
-            loopProgress(int(i/sSize),30,'Pathway Analysis')
+    for pathway,fl in tqdm(V.filePath.items(), total=len(V), desc='Pathway Analysis'):
         t=pd.read_csv(fl)
         V.loc[pathway,'Pathway Size']=len(t)
         V.loc[pathway,'N Measured']=t[pthLbl].isin(M[mLbl]).sum()

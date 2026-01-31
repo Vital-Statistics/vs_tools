@@ -1,12 +1,12 @@
+"""
+@author: Vital Statistics, LLC
+Copyright (c) 2026 Vital Statistics, LLC
+"""
 # Auto-generated from vsVisualizations/ package modules.
 
 # ---- source: vsVisualizations/boxSwarm.py ----
 #!/usr/bin/env python3
-"""
-Created on Sun Jan  4 11:51:49 2026
 
-@author: rudy
-"""
 
 import pandas as pd
 
@@ -20,16 +20,11 @@ def boxSwarm(group,value):
     # ax.legend_.remove()
 
 # ---- source: vsVisualizations/histogram.py ----
-"""
-Created on Fri Mar  9 08:07:47 2018
 
-@author: jel2
-"""
 
 def stratifiedHistogram(t,x,group=None,bins=10):
     
     import matplotlib.pyplot as plt
-    import pandas as pd
     import numpy as np
 
     y=t[x]
@@ -50,7 +45,6 @@ def stratifiedHistogram(t,x,group=None,bins=10):
 
 def temporalHistogram(t):
     import matplotlib.pyplot as plt
-    import pandas as pd
     #### t=t.astype("datetime64")
     ### t should be a series
 
@@ -61,11 +55,7 @@ def temporalHistogram(t):
     
 
 # ---- source: vsVisualizations/loopProgress.py ----
-"""
-Created on Mon Dec 20 12:16:57 2021
 
-@author: JoeLucas
-"""
 
 def loopProgress(i,N,lbl='',nSteps=20):
     import math
@@ -82,16 +72,10 @@ def loopProgress(i,N,lbl='',nSteps=20):
     
 
 # ---- source: vsVisualizations/multiCorrPlot.py ----
-"""
-Created on Fri Jun  3 10:08:42 2022
 
-@author: joest
-"""
 
 import math
 import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
 
 
 def compSig(dat):
@@ -103,6 +87,7 @@ def compSig(dat):
     return(res)
 
 def mvnOval(a,b,color=None,scale=2.65,alpha=.2):
+    import matplotlib.pyplot as plt
     from scipy.linalg import sqrtm
     t=pd.concat([a,b],axis=1)
     mn=np.array(t).mean(axis=0)
@@ -116,6 +101,7 @@ def mvnOval(a,b,color=None,scale=2.65,alpha=.2):
     return res
 
 def multiCorrPlot(u,x,y,grp,xlbl='',ylbl=''):
+    import matplotlib.pyplot as plt
     u=u.loc[u[[x,y]].isna().sum(axis=1)==0]
     nclr=len(u[grp].unique())-1
     for i,gg in enumerate(u[grp].unique()):
@@ -128,14 +114,9 @@ def multiCorrPlot(u,x,y,grp,xlbl='',ylbl=''):
 
 
 # ---- source: vsVisualizations/pivotalEncounter.py ----
-"""
-Created on Mon Mar 12 10:04:12 2018
 
-@author: jel2
-"""
 
 import datetime
-import pandas as pd
 
 def pivotalEncounter(evt,M,colName='LABEL',wdw=365.25/2,buffer=1,flt=None,countPatients=True):
     ############## Examples of diagnoses that occur more often after the initial diagnosis than before
@@ -194,16 +175,11 @@ def pivotalEncounter(evt,M,colName='LABEL',wdw=365.25/2,buffer=1,flt=None,countP
     
 
 # ---- source: vsVisualizations/stratifiedHistogram.py ----
-"""
-Created on Fri Mar  9 08:07:47 2018
 
-@author: jel2
-"""
 
 def stratifiedHistogram(t,x,group=None,bins=10):
     
     import matplotlib.pyplot as plt
-    import pandas as pd
     import numpy as np
 
     y=t[x]
@@ -225,18 +201,13 @@ def stratifiedHistogram(t,x,group=None,bins=10):
 
 
 # ---- source: vsVisualizations/stratifiedSurvival.py ----
-"""
-Created on Fri Mar  9 08:07:47 2018
 
-@author: jel2
-"""
 
 def stratifiedSurvival(t,eventTime,eventIndicator=None,followupTime=None,group=None):
     
     import matplotlib.pyplot as plt
     import lifelines as lf
     from lifelines.plotting import add_at_risk_counts
-    import pandas as pd
     import copy
 
     tm=t[eventTime].copy()
@@ -272,16 +243,10 @@ def stratifiedSurvival(t,eventTime,eventIndicator=None,followupTime=None,group=N
 #ax.spines['bottom'].set_position(('axes', -0.15 * 6.0 / fig.get_figheight()))
 
 # ---- source: vsVisualizations/twoCorrPlot.py ----
-"""
-Created on Fri Jun  3 10:08:42 2022
 
-@author: joest
-"""
 
 import math
 import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
 
 
 def compSig(dat):
@@ -293,6 +258,7 @@ def compSig(dat):
     return(res)
 
 def mvnOval(a,b,color=None,scale=2.65,alpha=.2):
+    import matplotlib.pyplot as plt
     from scipy.linalg import sqrtm
     t=pd.concat([a,b],axis=1)
     mn=np.array(t).mean(axis=0)
@@ -306,6 +272,7 @@ def mvnOval(a,b,color=None,scale=2.65,alpha=.2):
     return res
 
 def twoCorrPlot(x0,y0,x1,y1,lbl0='',lbl1='',xlbl='',ylbl=''):
+    import matplotlib.pyplot as plt
     plt.scatter(x0,y0,color=vs_clr('dark gray'),label=lbl0)
     mvnOval(x0,y0,color=vs_clr('dark gray',alpha=.2))
     plt.scatter(x1,y1,color=vs_clr(),label=lbl1)
@@ -316,6 +283,7 @@ def twoCorrPlot(x0,y0,x1,y1,lbl0='',lbl1='',xlbl='',ylbl=''):
     plt.tight_layout()
 
 def multiCorrPlot(u,x,y,grp,xlbl='',ylbl=''):
+    import matplotlib.pyplot as plt
     u=u.loc[u[[x,y]].isna().sum(axis=1)==0]
     nclr=len(u[grp].unique())-1
     for i,gg in enumerate(u[grp].unique()):
@@ -328,11 +296,7 @@ def multiCorrPlot(u,x,y,grp,xlbl='',ylbl=''):
 
 
 # ---- source: vsVisualizations/vs_clr.py ----
-"""
-Created on Mon Feb  1 10:47:06 2021
 
-@author: JoeLucas
-"""
 
 def vs_clr(cc='blue',alpha=1):
     r={'blue':(15/256,98/256,160/256)
@@ -363,11 +327,7 @@ def vs_clr_V1(cc='blue',alpha=1):
 
 # ---- source: vsVisualizations/vs_palette.py ----
 #!/usr/bin/env python3
-"""
-Created on Thu Feb 15 15:52:55 2024
 
-@author: rudy
-"""
 
 def vs_palette():
     pp=['#0e619f',

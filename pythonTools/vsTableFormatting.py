@@ -1,14 +1,34 @@
-# Auto-generated from vsTableFormatting/ package modules.
-
-# ---- source: vsTableFormatting/tOne_cleanBinary.py ----
-#!/usr/bin/env python3
 """
-Created on Sat Sep  2 15:10:29 2023
-
-@author: rudy
+@author: Vital Statistics, LLC
+Copyright (c) 2026 Vital Statistics, LLC
 """
-
 def tOne_cleanBinary(tbl):
+    """
+    Clean binary variables in a TableOne-style summary table.
+
+    This converts two-row binary variables (e.g., 0/1, True/False, Y/N) into a
+    single row while preserving the missing count and (if present) the P-Value.
+    The function expects a DataFrame with 'Variable' and 'Value' columns; if
+    needed it will attempt a reset_index to surface those columns.
+
+    Parameters
+    ----------
+    tbl : pandas.DataFrame
+        TableOne-style summary table (or output of `tOne_toDF`) with
+        columns including 'Variable', 'Value', and 'Missing'. May also include
+        'P-Value'.  This object is what is returned by the tOne_toDF function.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Cleaned table indexed by ['Variable', 'Value'] with binary variables
+        collapsed to a single row.
+
+    Raises
+    ------
+    None
+        Errors are reported via print statements and the function returns None.
+    """
     import pandas as pd
     import math
     if 'Variable' not in list(tbl):
@@ -48,15 +68,21 @@ def tOne_cleanBinary(tbl):
     tbl=tbl.set_index(['Variable','Value'])
     return(tbl)
 
-# ---- source: vsTableFormatting/tOne_toDF.py ----
-#!/usr/bin/env python3
-"""
-Created on Sat Sep  2 15:32:38 2023
-
-@author: rudy
-"""
 
 def tOne_toDF(tbl):
+    """
+    Convert a TableOne object to a DataFrame with a standardized index.
+
+    Parameters
+    ----------
+    tbl : tableone.TableOne
+        TableOne object whose `.tableone` attribute is a MultiIndex DataFrame.
+
+    Returns
+    -------
+    pandas.DataFrame
+        DataFrame indexed by ['Variable', 'Value'] with flattened columns.
+    """
     tbl=tbl.tableone
     tbl.columns=[v[1] for v in list(tbl)]
     tbl.reset_index(inplace=True)

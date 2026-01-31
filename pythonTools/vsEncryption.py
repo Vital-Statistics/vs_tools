@@ -1,12 +1,12 @@
+"""
+@author: Vital Statistics, LLC
+Copyright (c) 2026 Vital Statistics, LLC
+"""
 # Auto-generated from vsEncryption/ package modules.
 
 # ---- source: vsEncryption/encrypt_file.py ----
 #!/usr/bin/env python3
-"""
-Created on Fri Jun  7 15:44:08 2024
 
-@author: rudy
-"""
 
 # Function to encrypt data
 def encrypt_file(file_path, key=None):
@@ -32,11 +32,7 @@ def encrypt_file(file_path, key=None):
 
 # ---- source: vsEncryption/loadEncrypted.py ----
 #!/usr/bin/env python3
-"""
-Created on Fri Jun  7 16:03:23 2024
 
-@author: rudy
-"""
 
 import pandas as pd
 

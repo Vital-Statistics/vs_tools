@@ -1,12 +1,12 @@
+"""
+@author: Vital Statistics, LLC
+Copyright (c) 2026 Vital Statistics, LLC
+"""
 # Auto-generated from vsUtilityFunctions/ package modules.
 
 # ---- source: vsUtilityFunctions/delong_test.py ----
 #!/usr/bin/env python3
-"""
-Created on Thu Feb 20 16:03:36 2025
 
-@author: rudy
-"""
 ######### THIS IS PRODUCING WRONG RESULTS
 
 # def delong_test(y_true, y_pred1, y_pred2):
@@ -81,22 +81,14 @@ Created on Thu Feb 20 16:03:36 2025
 
 
 # ---- source: vsUtilityFunctions/rhoToZ.py ----
-"""
-Created on Fri Jun  3 09:18:44 2022
 
-@author: joest
-"""
 
 def rhoToZ(rho):
     import math
     return(.5*math.log((1+rho)/(1-rho)))
 
 # ---- source: vsUtilityFunctions/standardize.py ----
-"""
-Created on Mon May  9 13:33:58 2022
 
-@author: joest
-"""
 
 import pandas as pd
 
@@ -112,11 +104,7 @@ def standardize(x,axis=0):
     return(z)
 
 # ---- source: vsUtilityFunctions/twoCorrTest.py ----
-"""
-Created on Fri Jun  3 09:28:12 2022
 
-@author: joest
-"""
 
 ############ Reference:
 ###########  Hinkle DE, Wiersma W, Jurs SG (1988) Applied statistics for the behavioral sciences. 2nd ed. Boston: Houghton Mifflin Company

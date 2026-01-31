@@ -1,18 +1,18 @@
+"""
+@author: Vital Statistics, LLC
+Copyright (c) 2026 Vital Statistics, LLC
+"""
 # Auto-generated from vsSparseFactorModel/ package modules.
 
 # ---- source: vsSparseFactorModel/bfrm.py ----
-"""
-Created on Sat Apr 23 23:28:10 2022
 
-@author: joest
-"""
 
 import pandas as pd
 
-from vsUtilityFunctions import standardize
-from vsVisualizations import loopProgress
 
 def bfrm(Z,nFac=None,F=None,nSteps=500,phi0=.01,mu0=0,burnin=0,updateF=True):
+    from vsUtilityFunctions import standardize
+    from vsVisualizations import loopProgress
     import random
     import numpy as np
     import math
@@ -181,18 +181,10 @@ def bfrm(Z,nFac=None,F=None,nSteps=500,phi0=.01,mu0=0,burnin=0,updateF=True):
 #         FTrace[j,:,i]=F[:,j]
 
 # ---- source: vsSparseFactorModel/bfrm_prior.py ----
-"""
-Created on Sat Apr 23 23:28:10 2022
 
-@author: joest
-"""
 
 import numpy as np
-import pandas as pd
-import statsmodels.api as sm
-import scipy.stats as st
 
-from vsVisualizations import loopProgress
 
 def pcImpute(M,nFac=2,mask=None,nSteps=1):
     if mask is None:
@@ -205,6 +197,7 @@ def pcImpute(M,nFac=2,mask=None,nSteps=1):
     return(M,mask)
 
 def optimalBeta(Z,H,pThreshold=.05): 
+    import statsmodels.api as sm
     from sklearn.linear_model import Ridge
     rr=Ridge(alpha=.1)
     bList=list()
@@ -217,6 +210,7 @@ def optimalBeta(Z,H,pThreshold=.05):
     # return(pd.DataFrame(np.stack(bList),index=Z.index,columns=list(H)))
     
 def updateFactor(Y,bb,theta,h=None,theta0=None,q=None):
+    import scipy.stats as st
     if h is None:
         h=np.array([0]*Y.shape[1])
     else:
@@ -233,22 +227,26 @@ def updateFactor(Y,bb,theta,h=None,theta0=None,q=None):
         return(res)
 
 def updatePtMass(nu,m,q):
+    import scipy.stats as st
     r=st.norm.pdf(0)/np.maximum(.000001,st.norm.pdf(0,loc=m,scale=1/np.sqrt(nu)))
     return(r/(q+r))
 
 
 def sampTheta(epsilon,pt_alpha=1,pt_beta=1):
+    import scipy.stats as st
     nSamp=epsilon.shape[1]
     tt=((epsilon**2).sum(axis=1)/2+pt_alpha)
     return(st.gamma.rvs(nSamp/2+pt_beta,scale=1/tt))
 
 
 def sampZ(mu,sigma):    
+    import scipy.stats as st
     return(st.norm.rvs(loc=mu,scale=sigma))
 
 
 
 def bfrm_prior(Z,H,z_mask=None,nFac=0,nSteps=500,burnin=0,hpStrength=50):
+    from vsVisualizations import loopProgress
     import random
     import numpy as np
     import math
@@ -330,15 +328,9 @@ def bfrm_prior(Z,H,z_mask=None,nFac=0,nSteps=500,burnin=0,hpStrength=50):
 
 # ---- source: vsSparseFactorModel/findFactorModes.py ----
 #!/usr/bin/env python3
-"""
-Created on Sat Dec  6 10:57:14 2025
 
-@author: rudy + ChatGPT
-"""
 
 import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
 
 def removeDups(omList, cos_tol=0.9):
     """
@@ -444,6 +436,7 @@ def updatePtmEstimate(beta, omList, X, Xnorm2):
     return newOmList
 
 def findModes(X,showPlots=False,cos_tol=.999):
+    import matplotlib.pyplot as plt
     omList, X_used, Xnorm2 = initializePtmEstimate(X)
 
     ################### variable step size
@@ -513,6 +506,7 @@ def cSlope(tbl):
     return([-np.inf]+[a/b if b>0 else np.inf for a,b in zip(dN,dd)])
 
 def filterModes(omTrace,showPlots=False):
+    import matplotlib.pyplot as plt
     beta=[a for a,b in omTrace]
     tbl=pd.DataFrame({'delta':[a-b for a,b in zip(beta[1:],beta[:-1])]})
     tbl['N']=[len(b) for a,b in omTrace[:-1]]

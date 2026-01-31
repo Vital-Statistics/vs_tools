@@ -1,11 +1,11 @@
+"""
+@author: Vital Statistics, LLC
+Copyright (c) 2026 Vital Statistics, LLC
+"""
 # Auto-generated from vsPosteriorDensities/ package modules.
 
 # ---- source: vsPosteriorDensities/ll_MVNormal.py ----
-"""
-Created on Tue Dec 14 13:41:55 2021
 
-@author: joest
-"""
 
 import numpy as np
 

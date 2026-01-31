@@ -1,14 +1,15 @@
-# Auto-generated from vsHighDimensionalData/ package modules.
-
-# ---- source: vsHighDimensionalData/imputeMissing.py ----
-#!/usr/bin/env python3
 """
-Created on Sun Dec 21 09:51:29 2025
-
-@author: rudy
+@author: Vital Statistics, LLC
+Copyright (c) 2026 Vital Statistics, LLC
 """
 
+import numpy as np
 import pandas as pd
+try:
+    from tqdm import tqdm
+except Exception:
+    def tqdm(iterable=None, total=None, desc=None):
+        return iterable
 
 # def imputeMissing(X):
 #     ### EM-PCA / low-rank matrix completion
@@ -44,7 +45,23 @@ import pandas as pd
 
 
 def imputeMissing(X, k=20, n_iter=20):
-    import numpy as np
+    """
+    Impute missing values via iterative low-rank reconstruction.
+
+    Parameters
+    ----------
+    X : pandas.DataFrame
+        Data matrix with possible NaNs.
+    k : int, default 20
+        Rank for low-rank reconstruction.
+    n_iter : int, default 20
+        Number of reconstruction iterations.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Imputed data with original index and columns.
+    """
     X0 = X.to_numpy(dtype=float)
     mask = np.isnan(X0)  # True where missing
 
@@ -86,25 +103,30 @@ def imputeMissing(X, k=20, n_iter=20):
     
     return Xhat
 
-# ---- source: vsHighDimensionalData/regressAll.py ----
-#!/usr/bin/env python3
-"""
-Created on Sun Sep  3 08:48:39 2023
-
-@author: rudy
-"""
-
-import pandas as pd
-
-from vsVisualizations import loopProgress
-
 def regressAll(vIndep,Y,studyVars=None,lbl=None,showIntercept=False):
-    import numpy as np
+    """
+    Regress each column of Y on vIndep and summarize coefficients and p-values.
+
+    Parameters
+    ----------
+    vIndep : pandas.DataFrame
+        Independent variables (covariates).
+    Y : pandas.DataFrame
+        Dependent variables; each column is modeled separately.
+    studyVars : list[str] | None
+        Subset of vIndep columns to report FDR for; defaults to all columns.
+    lbl : str | None
+        Label for progress display.
+    showIntercept : bool, default False
+        Whether to include intercept estimates and FDR.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Summary table with coefficients, p-values, confidence intervals, and FDR.
+    """
     import statsmodels.api as sm
     from statsmodels.sandbox.stats.multicomp import multipletests
-    
-    # if type(dem.Group)==pd.core.series.Series:
-    #     vIndep=pd.DataFrame(vIndep)
     
     drp=(Y.std()<1e-10)
     if drp.sum()>0:
@@ -136,8 +158,7 @@ def regressAll(vIndep,Y,studyVars=None,lbl=None,showIntercept=False):
     N=len(res)
     Z=vIndep.join(Y)
     X_Const=sm.add_constant(Z[list(vIndep)],has_constant='raise')
-    for i,col in enumerate(res.index.values):
-        loopProgress(i,N,lbl)
+    for col in tqdm(res.index.values, total=N, desc=lbl or 'Regressing'):
         kp=~Z[col].isna()
         if X_Const.loc[kp,studyVars].std().max()>0:
             res.loc[col,'# Missing']=sum(~kp)
@@ -160,27 +181,31 @@ def regressAll(vIndep,Y,studyVars=None,lbl=None,showIntercept=False):
         res.loc[ll,'FDR, intercept']=multipletests(res.loc[ll,'P-Value, intercept'],method='fdr_bh')[1]
     return(res)
 
-# ---- source: vsHighDimensionalData/regressAllNA.py ----
-#!/usr/bin/env python3
-"""
-Created on Mon Dec 22 09:33:41 2025
-
-@author: rudy
-"""
-
-import pandas as pd
-
-from vsPathways import computeGAGE
-from vsVisualizations import loopProgress
-
-
 def regressAllNA(vIndep,Y,studyVars=None,lbl=None,showIntercept=False):
-    import numpy as np
+    """
+    Regress each column of Y with OLS and logistic models, aggregating p-values.
+
+    Parameters
+    ----------
+    vIndep : pandas.DataFrame
+        Independent variables (covariates).
+    Y : pandas.DataFrame
+        Dependent variables; each column is modeled separately.
+    studyVars : list[str] | None
+        Subset of vIndep columns to report aggregate FDR for.
+    lbl : str | None
+        Label for progress display.
+    showIntercept : bool, default False
+        Whether to include intercept estimates and FDR.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Summary table with OLS/logistic results and aggregate p-values/FDR.
+    """
+    from vsPathways import computeGAGE
     import statsmodels.api as sm
     from statsmodels.sandbox.stats.multicomp import multipletests
-    
-    # if type(dem.Group)==pd.core.series.Series:
-    #     vIndep=pd.DataFrame(vIndep)
     
     drp=(Y.std()<1e-10)
     if drp.sum()>0:
@@ -212,8 +237,7 @@ def regressAllNA(vIndep,Y,studyVars=None,lbl=None,showIntercept=False):
     N=len(res)
     Z=vIndep.join(Y)
     X_Const=sm.add_constant(Z[list(vIndep)],has_constant='raise')
-    for i,col in enumerate(res.index.values):
-        loopProgress(i,N,lbl)
+    for col in tqdm(res.index.values, total=N, desc=lbl or 'Regressing'):
         kp=~Z[col].isna()
         if X_Const.loc[kp,studyVars].std().max()>0:
             res.loc[col,'# Missing']=sum(~kp)
@@ -253,17 +277,26 @@ def regressAllNA(vIndep,Y,studyVars=None,lbl=None,showIntercept=False):
         res.loc[ll,'FDR, intercept']=multipletests(res.loc[ll,'P-Value, intercept'],method='fdr_bh')[1]
     return(res)
 
-# ---- source: vsHighDimensionalData/testIndexMatch.py ----
-#!/usr/bin/env python3
-"""
-Created on Wed Sep  6 05:56:24 2023
-
-@author: rudy
-"""
-
-import pandas as pd
-
 def testIndexMatch(A,B,showAB=False,showBA=False):
+    """
+    Compare index membership between two DataFrames/Series and report differences.
+
+    Parameters
+    ----------
+    A : pandas.DataFrame | pandas.Series
+        First dataset with index to compare.
+    B : pandas.DataFrame | pandas.Series
+        Second dataset with index to compare.
+    showAB : bool, default False
+        If True, print elements in A not in B.
+    showBA : bool, default False
+        If True, print elements in B not in A.
+
+    Returns
+    -------
+    None
+        Prints summary to stdout.
+    """
     a=pd.Series(A.index.values)
     b=pd.Series(B.index.values)
     for k,t in {'A':a,'B':b}.items():
@@ -291,18 +324,25 @@ def testIndexMatch(A,B,showAB=False,showBA=False):
         print(', '.join(list(ba)))
     print('There are '+str(len(union))+ ' unique elements in both indices.')
     
-
-# ---- source: vsHighDimensionalData/v_buildSparse.py ----
-"""
-Created on Wed Jun  7 10:29:12 2017
-
-@author: jel2
-"""
-
 def v_buildSparse(x,y,delta=None):
+    """
+    Build a sparse contingency matrix from categorical indices.
+
+    Parameters
+    ----------
+    x : pandas.Categorical
+        Row categories.
+    y : pandas.Categorical
+        Column categories.
+    delta : list[float] | None
+        Values for each (x, y) pair; defaults to 1 for all.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Sparse DataFrame with rows indexed by x categories and columns by y categories.
+    """
     import scipy
-    import pandas as pd
-    import numpy as np
     if delta is None:
         delta=[1]*len(x)
     i=x.codes

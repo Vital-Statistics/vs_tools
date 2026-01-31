@@ -1,16 +1,16 @@
+"""
+@author: Vital Statistics, LLC
+Copyright (c) 2026 Vital Statistics, LLC
+"""
 # Auto-generated from vsFeatures/ package modules.
 
 # ---- source: vsFeatures/buildSparse.py ----
-"""
-Created on Wed Jun  7 10:29:12 2017
 
-@author: jel2
-"""
 
 import numpy as np
-import scipy
 
 def buildSparse(df,a,b,colFilter=None,rowFilter=None):
+    import scipy
     ct=df[[a,b]].groupby([a,b]).size()
     i=np.array(ct.index.labels[0])
     j=np.array(ct.index.labels[1])
@@ -32,21 +32,13 @@ def buildSparse(df,a,b,colFilter=None,rowFilter=None):
     return([rLbl,cLbl,M])
 
 # ---- source: vsFeatures/featureExtraction.py ----
-"""
-Created on Thu Mar  1 10:10:49 2018
 
-@author: jel2
-"""
 
 def featureExtraction(eList,function, X=None, params=None):
     return X.join(function(eList,params),how='left').fillna(0)
 
 # ---- source: vsFeatures/matrixWdw.py ----
-"""
-Created on Thu Mar  1 09:49:53 2018
 
-@author: jel2
-"""
 
 
 def matrixWdw(eList,params):
@@ -74,15 +66,11 @@ def matrixWdw(eList,params):
     return(M)
 
 # ---- source: vsFeatures/sparseFactors.py ----
-"""
-Created on Sat Apr 23 23:28:10 2022
 
-@author: joest
-"""
 
-from vsVisualizations import loopProgress
 
 def sparseFactors(Z,nFac=10,nSteps=500):
+    from vsVisualizations import loopProgress
     import random
     import numpy as np
     import matplotlib.pyplot as plt
