@@ -4,6 +4,7 @@ vsFeatures
 vsHighDimensionalData
 vsJavaScript
 vsMassSpecData
+vsMcpServer
 vsOutcomeTools
 vsPathways
 vsPosteriorDensities

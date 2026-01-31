@@ -2,31 +2,54 @@
 @author: Vital Statistics, LLC
 Copyright (c) 2026 Vital Statistics, LLC
 """
-# Auto-generated from vsMassSpecData/ package modules.
-
-# ---- source: vsMassSpecData/addHMDB.py ----
-#!/usr/bin/env python3
-
 
 import os
+import re
+import time
+from datetime import date, timedelta
+
+import numpy as np
 import pandas as pd
+import pubchempy as pcp
+import requests
+
+from vsVisualizations import loopProgress
 
 def addHMDB(meta):
+    """
+    Add HMDB IDs to a metadata table using a Rosetta Stone mapping.
+
+    Parameters
+    ----------
+    meta : pandas.DataFrame
+        Metadata table with a 'Compound' column.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Metadata joined with HMDB ID lists.
+    """
     lbl=pd.concat([pd.read_excel(os.environ['DATA_PATH']+'metabolomics/q500 metaboliteNames/Rosetta Stone Quant 500_BioIDs_20190121.xlsx',sheet_name='LC Part',header=1),
                    pd.read_excel(os.environ['DATA_PATH']+'metabolomics/q500 metaboliteNames/Rosetta Stone Quant 500_BioIDs_20190121.xlsx',sheet_name='FIA Part',header=1)])
     lbl=lbl.loc[~lbl.HMDB.isna() & ~lbl['Short Name'].isna()][['Short Name','HMDB']].groupby('Short Name')['HMDB'].apply(lambda x:list(x))
     return(meta.join(lbl,on='Compound'))
 
-# ---- source: vsMassSpecData/apiLookups.py ----
-#!/usr/bin/env python3
-
-
-import time
-import os
-
-
 def lookupKeggPathways(keggID,reload=False):
-    import requests
+    """
+    Look up KEGG pathways for a KEGG compound ID with local caching.
+
+    Parameters
+    ----------
+    keggID : str
+        KEGG ID (e.g., 'C00031' or 'hsa:1234').
+    reload : bool, default False
+        If True, force a fresh API lookup and update the cache.
+
+    Returns
+    -------
+    list[str]
+        Pathway IDs linked to the KEGG entry.
+    """
     pwFilePath=os.environ['DATA_PATH']+'KEGG/keggPathways.parquet'
     pw=pd.read_parquet(pwFilePath)
     if keggID in set(pw.kegg) and not reload:
@@ -43,7 +66,19 @@ def lookupKeggPathways(keggID,reload=False):
         return(res)
 
 def uniprot_to_kegg(uniprot_id):
-    import requests
+    """
+    Convert a UniProt ID to KEGG IDs with local caching.
+
+    Parameters
+    ----------
+    uniprot_id : str
+        UniProt accession.
+
+    Returns
+    -------
+    list[str]
+        KEGG IDs for the UniProt accession.
+    """
     ak=pd.read_parquet(os.environ['DATA_PATH']+'KEGG/allKegg.parquet')
     if uniprot_id in list(ak.uniprot):
         return(ak.set_index('uniprot').loc[[uniprot_id],'kegg'].tolist())
@@ -59,13 +94,37 @@ def uniprot_to_kegg(uniprot_id):
         return(kegg)
 
 def lookup_hmdb(hmdb_id):
-    import requests
+    """
+    Look up HMDB details from Metabolomics Workbench.
+
+    Parameters
+    ----------
+    hmdb_id : str
+        HMDB identifier.
+
+    Returns
+    -------
+    dict
+        JSON response from the API.
+    """
     url = f"https://www.metabolomicsworkbench.org/rest/compound/hmdb_id/{hmdb_id}/"
     r = requests.get(url)
     return r.json()
 
 def map_names_via_metaboanalyst(names):
-    import requests
+    """
+    Map compound names via MetaboAnalyst REST API.
+
+    Parameters
+    ----------
+    names : list[str]
+        Compound names to map.
+
+    Returns
+    -------
+    dict
+        JSON response from the API.
+    """
     url = "https://rest.xialab.ca/api/mapcompounds"
     payload = {
         "queryList": ";".join(names),
@@ -75,7 +134,21 @@ def map_names_via_metaboanalyst(names):
 
 
 def lookup_pubchem_by_name(name, max_hits=3):
-    import pubchempy as pcp
+    """
+    Query PubChem by compound name and return basic annotations.
+
+    Parameters
+    ----------
+    name : str
+        Compound name.
+    max_hits : int, default 3
+        Maximum number of hits to return.
+
+    Returns
+    -------
+    list[dict]
+        Annotated PubChem hits (CID, IUPAC name, formula, InChIKey).
+    """
     comps = pcp.get_compounds(name, 'name')
     results = []
     for c in comps[:max_hits]:
@@ -89,16 +162,40 @@ def lookup_pubchem_by_name(name, max_hits=3):
     return results
 
 def mw_lookup_pubchem(cid):
-    import requests
+    """
+    Look up Metabolomics Workbench details by PubChem CID.
+
+    Parameters
+    ----------
+    cid : str | int
+        PubChem CID.
+
+    Returns
+    -------
+    dict
+        JSON response from the API.
+    """
     url = f"https://www.metabolomicsworkbench.org/rest/compound/pubchem_cid/{cid}/all/json"
     r = requests.get(url)
     r.raise_for_status()
     return r.json()
 
 def apiLookups(s,rerunSearch=180):
-    from datetime import date,timedelta
-    import os, time
-    
+    """
+    Perform cached PubChem and Metabolomics Workbench lookups for analytes.
+
+    Parameters
+    ----------
+    s : pandas.Series
+        Series of analyte names.
+    rerunSearch : int, default 180
+        Re-run searches older than this many days.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Lookup results for the analytes.
+    """
     psPath=os.environ['DATA_PATH']+'metabolomics/apiLookups.parquet'
     priorSearch=pd.read_parquet(psPath)
     priorSearch["Search Date"] = pd.to_datetime(priorSearch["Search Date"], errors="coerce")
@@ -141,32 +238,45 @@ def apiLookups(s,rerunSearch=180):
     tbl=tbl.rename(columns={'query_name':'Analyte'})
     return(tbl)
 
-# for res in lookup_pubchem_by_name("alanine"):
-#     print(res)
-
-# for res in lookup_pubchem_by_name("choline"):
-#     print(res)
-
-
-
-# # Example usage
-# print(map_names_via_metaboanalyst(["alanine","choline"]))
-# print(lookup_hmdb("HMDB0000161"))
-
-# ---- source: vsMassSpecData/loadMetabolomics.py ----
-
-
-import re
-
 def loadMetabolomics(filePath,lastSampCol='Injection Number',sid='Customer Sample Identification',maxMissing=1
-                     ,header=1,lodCol=None,nHeader=None,log2Transform=None,normalize=False,platform=None,stdFilter=False
+                     ,header=1,lodCol=None,nHeader=None,log2Transform=True,normalize=False,platform=None,stdFilter=False
                      ,imputeMissing=True):
-    import numpy as np
-    import math
-    
-    if log2Transform is None:
-        print('Code as been modified to require explicit log2Transform.')
-        return()
+    """
+    Load metabolomics data from a vendor export and perform basic cleaning.
+
+    Parameters
+    ----------
+    filePath : str
+        Path to the input Excel file.
+    lastSampCol : str, default 'Injection Number'
+        Column name for the last sample metadata column.
+    sid : str, default 'Customer Sample Identification'
+        Sample ID column name.
+    maxMissing : int, default 1
+        Maximum missing values per analyte before dropping.
+    header : int, default 1
+        Excel header row.
+    lodCol : str | None
+        Optional LOD column name.
+    nHeader : int | None
+        Number of header rows to skip.
+    log2Transform : bool | None
+        Whether to log2-transform data (must be explicitly provided).
+    normalize : bool, default False
+        Whether to normalize analyte levels.
+    platform : str | None
+        Optional prefix for analyte names.
+    stdFilter : float | False
+        Optional standard deviation filter threshold.
+    imputeMissing : bool, default True
+        Whether to impute missing values.
+
+    Returns
+    -------
+    tuple
+        (ss, aa, t) where ss is sample metadata, aa is analyte annotation,
+        and t is the analyte matrix.
+    """
     
     # read in data
     t=pd.read_excel(filePath,header=header,dtype=str,na_filter=False)
@@ -235,7 +345,6 @@ def loadMetabolomics(filePath,lastSampCol='Injection Number',sid='Customer Sampl
             t=pd.DataFrame(np.array(t)/np.array(t.sum(axis=1)).reshape(-1,1),columns=t.columns,index=t.index)
             
         if log2Transform:
-            # t=t.apply(np.vectorize(math.log2))
             t = np.log2(t.where(t > 0))
         
         if platform:
@@ -256,47 +365,20 @@ def loadMetabolomics(filePath,lastSampCol='Injection Number',sid='Customer Sampl
         aa=None
     return((ss,aa,t))
         
-    # bileAcids = pd.read_excel(filePath,
-    #                           sheet_name='Status Columns Removed',
-    #                           header=[1])
-        
-    # # extract limits of detection
-    # LOD = pd.to_numeric(bileAcids.iloc[1,:],errors='coerce')
-    
-    # # drop extra rows
-    # # bileAcids = bileAcids.drop([0,1,2,3])
-    # drpRow=bileAcids['Customer Sample Identification'].str.contains('study pool',re.IGNORECASE).fillna(True)
-    # bileAcids=bileAcids.loc[~drpRow]
-    
-    # # drop extra columns
-    # drops = ['Plate Bar Code','Sample Bar Code','Sample Type','Sample Identification',
-    #          'Species','Material','Well Position','Sample Volume','Run Number','Injection Number']
-    # bileAcids=bileAcids.drop(drops,axis=1).rename(columns={'Customer Sample Identification':'Sample ID'})
-    
-    # # drop columns with greater than 40% <LOD
-    # keeps=['Sample ID']
-    # for k in list(bileAcids)[1:]:
-    #     if sum((bileAcids[k]=='<LOD') | (bileAcids[k]==0) | (bileAcids[k].isnull()))/len(bileAcids[k])<0.40:
-    #         keeps.append(k)
-    
-    # bileAcids = bileAcids[keeps]
-    
-    # # replace <LOD and NA with limits of detection
-    # for k in list(bileAcids)[1:]:
-    #     bileAcids.loc[(bileAcids[k]=='<LOD') | (bileAcids[k].isnull()) | (bileAcids[k]==0),k] = LOD[k]
-    
-    # # convert to float
-    # bileAcids[list(bileAcids)[1:]] = bileAcids[list(bileAcids)[1:]].astype('float')
-    # return(bileAcids)
-
-
-# ---- source: vsMassSpecData/loadSynonyms.py ----
-#!/usr/bin/env python3
-
-
-import os
-
 def loadSynonyms(meta):
+    """
+    Load synonym mappings and join with metadata.
+
+    Parameters
+    ----------
+    meta : pandas.DataFrame
+        Metadata table with a 'Compound' column.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Metadata joined with synonym mappings.
+    """
     lbl=pd.concat([pd.read_excel(os.environ['DATA_PATH']+'metabolomics/q500 metaboliteNames/Rosetta Stone Quant 500_BioIDs_20190121.xlsx',sheet_name='LC Part',header=1),
                    pd.read_excel(os.environ['DATA_PATH']+'metabolomics/q500 metaboliteNames/Rosetta Stone Quant 500_BioIDs_20190121.xlsx',sheet_name='FIA Part',header=1)])
     lbl=lbl.loc[~lbl.HMDB.isna() & ~lbl['Short Name'].isna()][['Short Name','HMDB']].groupby('Short Name')['HMDB'].apply(lambda x:list(x))
@@ -305,64 +387,84 @@ def loadSynonyms(meta):
     
     return(meta.join(lbl,on='Compound'))
 
-# ---- source: vsMassSpecData/m_canonicalNames.py ----
-#!/usr/bin/env python3
-
-
-import os
-import re
-
-
 def t_tg(s):
+    """Normalize triglyceride naming format."""
     res=re.sub(r'^TG\.(\d+)\.(\d+)_([\d\.]+)\.(\d+)', r'TG \1:\2_\3:\4', s)
     return(res)
 
 def t_lpc(s):
+    """Normalize LPC naming format."""
     res=re.sub(r'^LPC[\s\.](\d+)[\s\.:](\d+)',r'LPC \1:\2',s)
     return(res)
 
 def t_PC(s):
+    """Normalize PC naming format."""
     res=re.sub(r'^PC[\s\.](\d+)[\s\.:](\d+)',r'PC \1:\2',s)
     return(res)
 
 def t_PCO(s):
+    """Normalize PC-O naming format."""
     res=re.sub(r'^PC[\s\.]O[\s\.](\d+)[\s\.:](\d+)',r'PC O-\1:\2',s)
     return(res)
 
 def t_Hex2(s):
+    """Normalize Hex2Cer naming format."""
     res=re.sub(r'^Hex2Cer[\s\.](d\d+)[\s\.:](\d+)[\s\.:](\d+)[\s\.:](\d+)',r'Hex2Cer \1:\2/\3:\4',s)
     return(res)
 
 def t_Hex3(s):
+    """Normalize Hex3Cer naming format."""
     res=re.sub(r'^Hex3Cer[\s\.](d\d+)[\s\.:](\d+)[\s\.:](\d+)[\s\.:](\d+)',r'Hex3Cer \1:\2/\3:\4',s)
     return(res)
 
 def t_Hex(s):
+    """Normalize HexCer naming format."""
     res=re.sub(r'^Hex[\s\.]Cer[\s\.](d\d+)[\s\.:](\d+)[\s\.:](\d+)[\s\.:](\d+)',r'Hex-Cer \1:\2/\3:\4',s)
     return(res)
 
 def t_DG(s):
+    """Normalize DG naming format."""
     res=re.sub(r'^DG[\s\.](\d+)[\s\.:](\d+)[\s\.:_](\d+)[\s\.:](\d+)',r'DG \1:\2_\3:\4',s)
     return(res)
 
 def t_Cer(s):
+    """Normalize Cer naming format."""
     res=re.sub(r'^Cer[\s\.](d\d+)[\s\.:](\d+)[\s\.:](\d+)[\s\.:](\d+)',r'Cer \1:\2/\3:\4',s)
     return(res)
 
 def t_CE(s):
+    """Normalize CE naming format."""
     res=re.sub(r'^CE[\s\.](\d+)[\s\.:](\d+)',r'CE \1:\2',s)
     return(res)
 
 def t_simple(s):
+    """Normalize simple lipid naming formats."""
     res=re.sub(r'^(SM|FA)[\s\.](\d+)[\s\.:](\d+)',r'\1 \2:\3',s)
     return(res)
 
 def t_PLA(s):
+    """Normalize PLA2 naming format."""
     res=re.sub(r'^PLA2[\s\.]Activity[\s\.:]+(\d+)[\s\.:]*',r'PLA2 Activity (\1)',s)
     return(res)
 
 def m_canonicalNames(res,colName='oName',metaAppend=[]):
-    import numpy as np
+    """
+    Standardize analyte names and optionally append metadata.
+
+    Parameters
+    ----------
+    res : pandas.DataFrame | pandas.Series
+        Input analyte table or series.
+    colName : str, default 'oName'
+        Column name containing original analyte names.
+    metaAppend : list[str]
+        Optional metadata sources to append (e.g., 'ros', 'api', 'hmdb').
+
+    Returns
+    -------
+    pandas.DataFrame
+        Table with standardized analyte names and optional metadata.
+    """
     syn=pd.read_parquet(os.environ['DATA_PATH']+'metabolomics/synonyms.parquet')
     syn=syn.rename(columns={'Analyte':'oldName','New Name':'Analyte'})
     if isinstance(res, pd.Series):
@@ -413,46 +515,20 @@ def m_canonicalNames(res,colName='oName',metaAppend=[]):
     
     return(res)
 
-# #########
-# print(res.Analyte.isin(syn.Analyte).sum())
-# print(res.Analyte.nunique())
-
-# for col in list(syn):
-#     print(col+': '+str(syn[col].isin(lbl.index.values).sum()))
-
-# st='Cer'
-# for tbl in [res,syn]:
-#     print('\n')
-#     print(tbl.loc[tbl.Analyte.str.startswith(st)].head())
-
-# res.loc[~res.Analyte.isin(list(syn.Analyte)) & res.Analyte.str.startswith(st)]
-
-# # res.loc[~res.Analyte.isin(lbl.Analyte),'Analyte'].str[:3].value_counts().head()
-# res.loc[~res.Analyte.isin(syn['Analyte']),'Analyte'].str[:3].value_counts().head()
-
-# res.loc[~res.Analyte.isin(syn['Analyte']),'Analyte']
-
-# st='PC '
-# res.loc[~res.Analyte.isin(syn.Analyte) & res.Analyte.str.startswith(st)]
-
-# lbl.loc[lbl['Short Name'].str.startswith('PC '),'Short Name'].str[:6].value_counts()
-
-# for a in list(ros):
-#     for b in list(syn):
-#         print('ros['+a+'], syn['+b+']: '+str(len(set(ros[a]) & set(syn[b]))))
-    
-
-# ---- source: vsMassSpecData/queryMetWorkbench.py ----
-#!/usr/bin/env python3
-
-
-
-
-
-# List of metabolite names to standardize
 def queryMetWorkbench(mwl):
-    from vsVisualizations import loopProgress
-    import requests
+    """
+    Query Metabolomics Workbench RefMet matching and details for names.
+
+    Parameters
+    ----------
+    mwl : list[str]
+        List of metabolite names.
+
+    Returns
+    -------
+    pandas.DataFrame
+        RefMet match results joined with details.
+    """
     res=list()
     for i,name in enumerate(mwl):
         loopProgress(i,len(mwl),'matching')

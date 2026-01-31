@@ -7,6 +7,7 @@ pythonTools/vsFeatures.py
 pythonTools/vsHighDimensionalData.py
 pythonTools/vsJavaScript.py
 pythonTools/vsMassSpecData.py
+pythonTools/vsMcpServer.py
 pythonTools/vsOutcomeTools.py
 pythonTools/vsPathways.py
 pythonTools/vsPosteriorDensities.py

@@ -27,6 +27,7 @@ py-modules = [
   "vsHighDimensionalData",
   "vsJavaScript",
   "vsMassSpecData",
+  "vsMcpServer",
   "vsOutcomeTools",
   "vsPathways",
   "vsPosteriorDensities",
