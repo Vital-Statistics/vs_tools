@@ -146,28 +146,16 @@ def newAnalysis(pth,resFolder='analysis',fileName='analysis',outputFolder='resul
     os.chdir(fld)
     fld=os.getcwd()
     fld='/'.join(fld.split(os.sep))
-    # if fileName is None:
-    #     fileName=fld.replace(os.environ['START_PATH'],'')
-    #     if fileName==fld:
-    #         print('Not in start_path.  Setting filename to "analysis".')
-    #         fileName='analysis'
-    #     else:
-    #         fileName=fileName.split('/')
-        
     a="os.environ['START_PATH']+"+"'"+fld.replace(os.environ['START_PATH'],'')+"'"
     fh=open(fileName+'.py','w',encoding='utf8')
     fileText="""
 # created by newAnalysis script on '+datetime.date.today().strftime("%Y/%m/%d")
-import math
+from vsUtil import *
 
 os.chdir(<a>)
-
-reGit()
-reTool()
 reLoc()
 
 fld=setFolder('<outputFolder>')
-
 
 """
     fh.write(fileText.replace('<outputFolder>',outputFolder).replace('<a>',a))
