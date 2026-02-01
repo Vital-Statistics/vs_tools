@@ -2,16 +2,12 @@
 @author: Vital Statistics, LLC
 Copyright (c) 2026 Vital Statistics, LLC
 """
-# Auto-generated from vsSparseFactorModel/ package modules.
-
-# ---- source: vsSparseFactorModel/bfrm.py ----
-
 
 import pandas as pd
 
 
 def bfrm(Z,nFac=None,F=None,nSteps=500,phi0=.01,mu0=0,burnin=0,updateF=True):
-    from vsUtilityFunctions import standardize
+    from vsStatFunctions import standardize
     from vsVisualizations import loopProgress
     import random
     import numpy as np

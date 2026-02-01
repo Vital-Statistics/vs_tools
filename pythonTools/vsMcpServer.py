@@ -4,6 +4,7 @@ Copyright (c) 2026 Vital Statistics, LLC
 """
 from __future__ import annotations
 
+import os
 from typing import Any, Iterable
 
 import pandas as pd
@@ -14,7 +15,29 @@ import vsMassSpecData as ms
 import vsPathways as pathways
 import vsTableFormatting as tablefmt
 
-mcp = FastMCP("vs-tools")
+def _env_int(name: str, default: int) -> int:
+    try:
+        return int(os.getenv(name, str(default)))
+    except ValueError:
+        return default
+
+
+_host = os.getenv("MCP_HOST", "127.0.0.1")
+_port = _env_int("MCP_PORT", 8000)
+_log_level = os.getenv("MCP_LOG_LEVEL", "INFO").upper()
+_mount_path = os.getenv("MCP_MOUNT_PATH", "/")
+_sse_path = os.getenv("MCP_SSE_PATH", os.getenv("MCP_PATH", "/sse"))
+_message_path = os.getenv("MCP_MESSAGE_PATH", "/messages/")
+
+mcp = FastMCP(
+    "vs-tools",
+    host=_host,
+    port=_port,
+    log_level=_log_level,
+    mount_path=_mount_path,
+    sse_path=_sse_path,
+    message_path=_message_path,
+)
 
 
 def _df_from_any(data: Any) -> pd.DataFrame:
@@ -418,7 +441,12 @@ def queryMetWorkbench(mwl: list[str]) -> list[dict]:
 
 
 def main() -> None:
-    mcp.run()
+    transport = os.getenv("MCP_TRANSPORT", "sse")
+    mount_path = os.getenv("MCP_MOUNT_PATH", None)
+    if transport == "stdio":
+        mcp.run()
+        return
+    mcp.run(transport=transport, mount_path=mount_path)
 
 
 if __name__ == "__main__":
