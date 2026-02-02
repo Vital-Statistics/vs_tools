@@ -5,3 +5,7 @@
 # Python
 __pycache__/
 *.py[cod]
+build/
+dist/
+*.egg-info/
+pip-wheel-metadata/
