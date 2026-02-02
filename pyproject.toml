@@ -33,7 +33,9 @@ py-modules = [
   "vsPosteriorDensities",
   "vsPrediction",
   "vsSparseFactorModel",
+  "vsStatFunctions",
   "vsTableFormatting",
+  "vsUtil",
   "vsUtilityFunctions",
   "vsVisualizations",
 ]

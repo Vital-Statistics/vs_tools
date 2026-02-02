@@ -13,7 +13,9 @@ pythonTools/vsPathways.py
 pythonTools/vsPosteriorDensities.py
 pythonTools/vsPrediction.py
 pythonTools/vsSparseFactorModel.py
+pythonTools/vsStatFunctions.py
 pythonTools/vsTableFormatting.py
+pythonTools/vsUtil.py
 pythonTools/vsVisualizations.py
 pythonTools/vs_tools.egg-info/PKG-INFO
 pythonTools/vs_tools.egg-info/SOURCES.txt
