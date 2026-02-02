@@ -122,7 +122,7 @@ def cloneAnalysis(pth='.',root='START_PATH'):
 
 def newAnalysis(pth,resFolder='analysis',fileName='analysis',outputFolder='results'):
     """
-    Create a new analysis folder with a starter script and local tools folder.
+    Create a new analysis starter script and local tools folder. If the path doesn't exist, create it.
 
     Parameters
     ----------
@@ -134,11 +134,6 @@ def newAnalysis(pth,resFolder='analysis',fileName='analysis',outputFolder='resul
         Name of the starter script (without extension).
     outputFolder : str, default 'results'
         Output subfolder name.
-
-    Returns
-    -------
-    str
-        Editor command string to open the new script.
     """
     import datetime
     
@@ -150,6 +145,9 @@ def newAnalysis(pth,resFolder='analysis',fileName='analysis',outputFolder='resul
     fh=open(fileName+'.py','w',encoding='utf8')
     fileText="""
 # created by newAnalysis script on '+datetime.date.today().strftime("%Y/%m/%d")
+# @author: Vital Statistics, LLC
+# Copyright (c) 2026 Vital Statistics, LLC
+
 from vsUtil import *
 
 os.chdir(<a>)
@@ -162,7 +160,6 @@ fld=setFolder('<outputFolder>')
     fh.close()
     if not os.path.exists('localTools'):
         os.makedirs('localTools')
-    return '%edit '+fileName +'.py'
 
 def setFolder(folder):
     """
